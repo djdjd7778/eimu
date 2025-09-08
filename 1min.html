@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>エイム練習</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f4;
+            margin: 0;
+            height: 100vh;
+            position: relative;
+        }
+        #countdown {
+            font-size: 40px;
+            color: #ff6347;
+        }
+        #target {
+            width: 100px;
+            height: 100px;
+            background-color: #4caf50;
+            border-radius: 50%;
+            margin: 20px auto;
+            cursor: pointer;
+            position: absolute; /* これを追加 */
+        }
+        #result {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>エイム練習</h1>
+    <p id="countdown">60</p>
+    <div id="target"></div>
+    <p id="result"></p>
+
+    <script>
+        let countdownValue = 60;
+        let targetClicked = 0;
+        let countdownTimer;
+        let gameTimer;
+
+        // カウントダウンを始める関数
+        function startCountdown() {
+            countdownTimer = setInterval(() => {
+                countdownValue--;
+                document.getElementById('countdown').textContent = countdownValue;
+                if (countdownValue <= 0) {
+                    clearInterval(countdownTimer);
+                    clearInterval(gameTimer);
+                    document.getElementById('result').textContent = `ゲーム終了！ あなたのスコアは ${targetClicked} 回です。`;
+                    document.getElementById('target').style.display = 'none'; // ターゲット非表示
+                }
+            }, 1000);
+        }
+
+        // ターゲットをクリックした時の処理
+        function targetClick() {
+            targetClicked++;
+            document.getElementById('result').textContent = `スコア: ${targetClicked} 回`;
+            moveTarget(); // クリックしたらターゲットを移動
+        }
+
+        // ターゲットのランダムな位置を設定する関数
+        function moveTarget() {
+            let target = document.getElementById('target');
+            let maxWidth = window.innerWidth - target.offsetWidth;
+            let maxHeight = window.innerHeight - target.offsetHeight;
+            let randomX = Math.floor(Math.random() * maxWidth);
+            let randomY = Math.floor(Math.random() * maxHeight);
+
+            target.style.left = randomX + 'px';
+            target.style.top = randomY + 'px';
+        }
+
+        // ゲームの開始
+        window.onload = function () {
+            moveTarget(); // ゲーム開始時にターゲットを移動
+            gameTimer = setInterval(moveTarget,5000); 
+            startCountdown(); // カウントダウン開始
+
+            // ターゲットクリックイベント
+            document.getElementById('target').onclick = targetClick;
+        };
+    </script>
+</body>
+</html>
